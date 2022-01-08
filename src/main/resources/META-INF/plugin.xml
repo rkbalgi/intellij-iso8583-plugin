@@ -1,0 +1,36 @@
+<idea-plugin>
+    <id>com.github.rkbalgi.intellij.plugins.iso8583parser</id>
+    <name>ISO8583 Parser</name>
+    <vendor email="rkbalgi@gmail.com" url="http://www.yourcompany.com">DaaliToy Inc</vendor>
+
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="ISO8583" secondary="true" icon="AllIcons.General.Modified" anchor="right"
+                    factoryClass="com.github.rkbalgi.intellij.plugins.iso8583parser.ISO8583ToolWindowFactory"/>
+        <notificationGroup id="ISO8583-ng" displayType="BALLOON" key="notification.group.name"/>
+    </extensions>
+
+
+    <actions>
+
+        <group id="org.intellij.sdk.action.GroupedActions" text="ISO8583" popup="true" icon="AllIcons.Actions.Execute">
+
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ConsoleEditorPopupMenu" anchor="last"/>
+            <action class="com.github.rkbalgi.intellij.plugins.iso8583parser.ISOParser" id="iso-parser"
+                    text="Parse (from hexdump)">
+            </action>
+        </group>
+
+
+    </actions>
+</idea-plugin>
