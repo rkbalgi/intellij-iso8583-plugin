@@ -1,5 +1,7 @@
 package com.github.rkbalgi.intellij.plugins.iso8583parser
 
+import com.github.rkbalgi.iso4k.IsoField
+import com.github.rkbalgi.iso4k.Message
 import com.github.rkbalgi.iso4k.Spec
 import com.github.rkbalgi.iso4k.fromHexString
 import com.intellij.notification.NotificationGroupManager
@@ -24,9 +26,8 @@ import javax.swing.tree.TreePath
 
 class ISOParser : AnAction("") {
     override fun actionPerformed(e: AnActionEvent) {
-        var panel =
-            ToolWindowManager.getInstance(e.project!!)
-                .getToolWindow("ISO8583")!!.contentManager.getContent(0)!!.component as ISO8583Panel
+        var panel = ToolWindowManager.getInstance(e.project!!)
+            .getToolWindow("ISO8583")!!.contentManager.getContent(0)!!.component as ISO8583Panel
 
         println(e.inputEvent.component)
         println(e.inputEvent.component.parent)
@@ -77,8 +78,7 @@ class ISO8583Panel : JBTabbedPane() {
         } catch (e: Exception) {
             e.printStackTrace()
             NotificationGroupManager.getInstance().getNotificationGroup("ISO8583-ng")
-                .createNotification("Invalid ISO hexdump", NotificationType.ERROR)
-                .notify(project);
+                .createNotification("Invalid ISO hexdump", NotificationType.ERROR).notify(project);
             return
 
         }
@@ -93,20 +93,13 @@ class ISO8583Panel : JBTabbedPane() {
         val specMsg = spec!!.message(msgName!!)!!
         var msg = specMsg.parse(ba)
 
-
-        //var model = DefaultMutableTreeNode("ISO Spec");
-        //model.add(DefaultMutableTreeNode("MTI"))
-
         var rootNode = DefaultMutableTreeNode("ISO Spec");
         specMsg.fields().forEach {
             addToModel(it, msg, rootNode)
         }
 
-        val jTree = Tree(rootNode)
-        p.add(jTree, BorderLayout.CENTER);
 
-
-        //add(p)
+        p.add(Tree(rootNode), BorderLayout.CENTER);
 
         validate()
         repaint()
@@ -117,6 +110,16 @@ class ISO8583Panel : JBTabbedPane() {
 
 fun addToModel(field: IsoField, msg: Message, node: DefaultMutableTreeNode) {
 
+    if (msg.get(field.name) != null) {
+        val fieldNode = DefaultMutableTreeNode("${field.name} -> [${msg.get(field.name)?.encodeToString()}]")
+        node.add(fieldNode)
+
+        if (field.hasChildren()) {
+            field.children?.forEach { addToModel(it, msg, fieldNode) }
+        }
+
+    }
+
 
 }
 
@@ -126,7 +129,7 @@ class ISO8583ToolWindow(toolWindow: ToolWindow) {
     private val currentDate: JLabel? = null
     private val currentTime: JLabel? = null
     private val timeZone: JLabel? = null
-    val panel = ISO8583Panel()
+    private val panel = ISO8583Panel()
 
     init {
         //hideToolWindowButton!!.addActionListener { e: ActionEvent? -> toolWindow.hide(null) }
