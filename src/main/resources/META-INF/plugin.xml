@@ -3,13 +3,8 @@
     <name>ISO8583 Parser</name>
     <vendor email="rkbalgi@gmail.com" url="http://www.yourcompany.com">DaaliToy Inc</vendor>
 
-    <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-    ]]></description>
+    <description>Use this plugin to parse ISO8583 traces with the IDE</description>
 
-    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
 
 

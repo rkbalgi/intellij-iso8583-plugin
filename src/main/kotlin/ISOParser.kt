@@ -108,7 +108,6 @@ class ISO8583Panel : JBTabbedPane() {
 
 fun addToModel(field: IsoField, msg: Message, node: DefaultMutableTreeNode) {
 
-    println("adding ... ${field.name}")
     if (msg.get(field.name) != null) {
         val pos = if (field.position > 0) {
             field.position.toString()
