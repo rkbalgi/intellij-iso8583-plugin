@@ -18,10 +18,8 @@ import com.intellij.ui.content.Content
 import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.treeStructure.Tree
 import java.awt.BorderLayout
-import java.awt.TextField
-import javax.swing.*
+import javax.swing.JPanel
 import javax.swing.tree.DefaultMutableTreeNode
-import javax.swing.tree.TreePath
 
 
 class ISOParser : AnAction("") {
@@ -93,7 +91,7 @@ class ISO8583Panel : JBTabbedPane() {
         val specMsg = spec!!.message(msgName!!)!!
         var msg = specMsg.parse(ba)
 
-        var rootNode = DefaultMutableTreeNode("ISO Spec");
+        var rootNode = DefaultMutableTreeNode("ISO Spec: ${spec?.name}");
         specMsg.fields().forEach {
             addToModel(it, msg, rootNode)
         }
@@ -110,8 +108,14 @@ class ISO8583Panel : JBTabbedPane() {
 
 fun addToModel(field: IsoField, msg: Message, node: DefaultMutableTreeNode) {
 
+    println("adding ... ${field.name}")
     if (msg.get(field.name) != null) {
-        val fieldNode = DefaultMutableTreeNode("${field.name} -> [${msg.get(field.name)?.encodeToString()}]")
+        val pos = if (field.position > 0) {
+            field.position.toString()
+        } else {
+            "-"
+        }
+        val fieldNode = DefaultMutableTreeNode("($pos) ${field.name} -> [${msg.get(field.name)?.encodeToString()}]")
         node.add(fieldNode)
 
         if (field.hasChildren()) {
@@ -124,18 +128,8 @@ fun addToModel(field: IsoField, msg: Message, node: DefaultMutableTreeNode) {
 }
 
 class ISO8583ToolWindow(toolWindow: ToolWindow) {
-    private val refreshToolWindowButton: JButton? = null
-    private val hideToolWindowButton: JButton? = null
-    private val currentDate: JLabel? = null
-    private val currentTime: JLabel? = null
-    private val timeZone: JLabel? = null
+
     private val panel = ISO8583Panel()
-
-    init {
-        //hideToolWindowButton!!.addActionListener { e: ActionEvent? -> toolWindow.hide(null) }
-        //refreshToolWindowButton!!.addActionListener { e: ActionEvent? -> currentDateTime() }
-    }
-
     fun getContent(): ISO8583Panel {
         return panel
     }
